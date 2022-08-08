@@ -1,0 +1,29 @@
+
+ cachorro lamber gato hoje --> cachorro (suj) , lamber gato hoje (pred)
+								suj --> cachorro
+								pred --> lamber (verbo), gato hoje (compl verbal)
+												compl verbal --> gato (objeto), hoje (adv)
+
+	Cachorro {lambe} [NGRAMA pelo tipo do elemento - artigo, preposição ...(O)] gato hoje.
+
+	Hoje cachorro {lambe} (O) gato
+	
+	
+ quantos valor pagar combustível --> quantos valor (suj), pagar combustível (pred)
+					suj --> quantos (adv)  valor (????)
+					pred --> pagar (verbo) combustível(objeto)
+
+
+	Quantos valor {paga} (NO) combustível --> ConjVerbo
+	Quantos (O) valor {paga} (NO) combustível --> inclusaoArtigo ^ ConjVerbo ^ InclusaoPrep 
+	(QUANTO) (O) valor {paga} (NO) combustível
+	(QUAL) (O) valor {pago} (NO) combustível
+
+
+ ELES COMPRAR PÃO PARA NÓS --> eles(suj), comprar pão para nós(pred)
+				SUJ --> eles
+				pred --> comprar (verbo) pão para nós (compl verbal)
+				compl verbal --> pão (Obj) para (prep) nós(
+ 
+
+	Eles {compraram} pão para nós.

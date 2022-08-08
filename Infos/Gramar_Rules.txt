@@ -1,0 +1,17 @@
+https://towardsdatascience.com/understanding-word-n-grams-and-n-gram-probability-in-natural-language-processing-9d9eef0fa058
+
+https://www.todamateria.com.br/gramatica/
+
+https://www.todamateria.com.br/funcao-sintatica/
+
+https://lark-parser.readthedocs.io/en/latest/
+
+https://github.com/inoueMashuu/POS-tagger-portuguese-nltk/tree/master/trained_POS_taggers
+
+https://www.deeplearningbook.com.br/
+
+
+A1522
+
+
+
