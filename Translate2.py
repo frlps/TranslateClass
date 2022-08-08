@@ -1,4 +1,6 @@
 import pickle
+import nltk 
+nltk.download('punkt')
 
 #Importanto o POS Tagger Brill já treinado
 with open('Tagger_Brill.pkl', 'rb') as handle1:
@@ -21,10 +23,10 @@ class Translate:
         self.brill_tagger = brill_tagger
 
         if sentence_to_translate == None:
-            inp = input('Qual a sentença que voê quer traduzir?? : ')
-            self.stt = inp
+            inp = input('Qual a sentença que você quer traduzir?? : ')
+            self.stt = inp.lower()
         else:
-            self.stt = sentence_to_translate
+            self.stt = sentence_to_translate.lower()
 
         self.tagged_sentence = self.tagger_choose()
 
@@ -93,7 +95,7 @@ class Translate:
                 advs.append(self.tagged_sentence[i][0])
         return (adv_indx, advs)
 
-    def Presente(self):
+    def NOUN_search(self):
         """Metodo para encontrar substantivoss na sentença etiquetada"""
         noun_indx =[]
         nouns=[]
@@ -144,3 +146,42 @@ class Translate:
             temp = temp.lower()
             return temp
         return advt_sent[0][1]  
+
+""""-----------------------------sujeito da sentença-----------------------------"""
+
+def PROPESS_INCLUD_sentence(self):
+    """
+    Metodo para incluir EU oculto na sentença etiquetada
+    !!! trocar para busca com n-gram
+    """
+
+    sentence = []
+
+    verbs_indx, _ = self.VERB_search()
+
+    if verbs_indx[0] == 0:
+        sentence.append(('eu','PROPESS'))
+
+    for pos in self.tagged_sentence:
+        sentence.append(pos)
+
+    self.tagged_sentence = sentence
+
+
+        
+# def AN_MORF_SUBJECT_search(self):
+#     """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
+
+#     singular = ['eu','tu','ele', 'você']
+#     plural = ['nós', 'vós','eles', 'vocês']
+
+#     verbs_indx, verbs = self.VERB_search()
+
+#     propesss_indx, propesss = self.PROPESS_search()
+#     nprops_indx, nprops = self.NPROP_search()
+#     nouns_indx, nouns = self.NOUN_search()
+
+#     subject_counter = 0
+
+#     if verbs == None:
+        
