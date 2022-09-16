@@ -8,3 +8,4 @@ For tranlation project, initial tests
         The filters will be constructed only for these verbal times, as well as for the searchs
 
     * Finding the substantive (noun) of the frase
+        - inclusion of propess 'eu' in frases that inits that starts with verbs (tendencies captured by Tania, our linguistcs consultant)

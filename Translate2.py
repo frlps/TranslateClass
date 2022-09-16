@@ -28,6 +28,8 @@ class Translate:
         else:
             self.stt = sentence_to_translate.lower()
 
+        self.tokens = tknz.word_tokenize(self.stt)
+
         self.tagged_sentence = self.tagger_choose()
 
     def test_taggers(self):
