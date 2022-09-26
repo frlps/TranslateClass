@@ -9,3 +9,10 @@ For tranlation project, initial tests
 
     * Finding the substantive (noun) of the frase
         - inclusion of propess 'eu' in frases that inits that starts with verbs (tendencies captured by Tania, our linguistcs consultant)
+
+------
+
+Download and install simplemma.
+
+pip install simplemma
+

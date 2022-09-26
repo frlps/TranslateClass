@@ -1,4 +1,5 @@
 import pickle
+import simplemma
 import nltk 
 nltk.download('punkt')
 
@@ -11,6 +12,9 @@ with open('Tagger_Unigram_NLTK.pkl', 'rb') as handle2:
     unigram_tag = pickle.load(handle2)
 
 import nltk.tokenize as tknz
+
+
+import simplemma
 
 class Translate:
     """
@@ -169,8 +173,20 @@ class Translate:
 
         self.tagged_sentence = sentence
 
+    """"-----------------------------Redução de Verbo por lematização-----------------------------"""
 
-        
+    def VERB_REDUCT_lemmatizer(self):
+        """
+        Metodo para reduzir o verbo ao infinitivo com lematizador Simplemma.
+        """
+        infinit_verbs = []
+
+        tagged = self.VERB_search()
+        for verb in tagged[1]:
+            infinit_verbs.append(simplemma.lemmatize(verb,lang='pt'))
+
+        return infinit_verbs
+
     # def AN_MORF_SUBJECT_search(self):
     #     """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
 
