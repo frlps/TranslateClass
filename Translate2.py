@@ -14,8 +14,6 @@ with open('Tagger_Unigram_NLTK.pkl', 'rb') as handle2:
 import nltk.tokenize as tknz
 
 
-import simplemma
-
 class Translate:
     """
         Classe translate version 1.1 03/08/2022
@@ -78,6 +76,42 @@ class Translate:
             tagger = unigram
         
         return tagger
+        
+    """-----------------------------correções menores do etiquetamento, pontuação-----------------------------"""
+
+    def TAGGER_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de pontuação"""
+        for i in range(0,len(self.tagged_sentence)):
+            if self.tagged_sentence[i][0] == '.':
+                self.tagged_sentence[i] = ('.','.')
+        for i in range(0,len(self.tagged_sentence)):
+            if self.tagged_sentence[i][0] == ',':
+                self.tagged_sentence[i] = (',',',')
+
+    """-----------------------------correções menores do etiquetamento, artigos-----------------------------"""
+
+    def ARTICLES_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de ARTIGOS"""
+
+        articles_list = ['a','o','as','os','um','uma','uns','umas']
+
+        for i in range(0,len(self.tagged_sentence)):
+            art = self.tagged_sentence[i][0]
+            if art in articles_list:
+                self.tagged_sentence[i] = (art,'ART')
+
+    """-----------------------------correções menores do etiquetamento, preposições-----------------------------"""
+
+    def PREPOSITIONS_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de PREPOSIÇÕES essenciais e contrações"""
+
+        prepositions_list = ['à','ao','às','aos','ante', 'após', 'até', 'com', 'contra', 'de', 'da', 'do', 'das', 'dos', 'desde', 
+        'em', 'na', 'no', 'nas', 'nos', 'entre', 'para', 'per', 'perante', 'por', 'sem', 'sob', 'sobre', 'trás', 'num', 'numa']
+
+        for i in range(0,len(self.tagged_sentence)):
+            prep = self.tagged_sentence[i][0]
+            if prep in prepositions_list:
+                self.tagged_sentence[i] = (prep,'PREP')
 
     """-----------------------------buscas de elementos morfológicos-----------------------------"""
 
@@ -136,8 +170,8 @@ class Translate:
     def temp_sentence(self):
         """Metodo para encontrar o tempo verbal na sentença etiquetada"""
 
-        adv_temp = [('antes','passado'), ('agora','presente'), 
-        ('depois','futuro'), ('ontem','passado'), ('hoje','presente'), ('amanhã','futuro')]
+        adv_temp = [('antes','passado'), ('agora','presente'), ('depois','futuro'), 
+        ('já','passado'), ('ontem','passado'), ('hoje','presente'), ('amanhã','futuro')]
 
         advt_sent=[]
 
@@ -164,8 +198,11 @@ class Translate:
         sentence = []
 
         verbs_indx, _ = self.VERB_search()
+        adv_indx,_ = self.ADV_search()
 
         if verbs_indx[0] == 0:
+            sentence.append(('eu','PROPESS'))
+        elif verbs_indx[0] == 1 and adv_indx[0] == 0:
             sentence.append(('eu','PROPESS'))
 
         for pos in self.tagged_sentence:
@@ -177,7 +214,7 @@ class Translate:
 
     def VERB_REDUCT_lemmatizer(self):
         """
-        Metodo para reduzir o verbo ao infinitivo com lematizador Simplemma.
+        Método para reduzir o verbo ao infinitivo com lematizador Simplemma.
         """
         infinit_verbs = []
 
@@ -187,19 +224,36 @@ class Translate:
 
         return infinit_verbs
 
-    # def AN_MORF_SUBJECT_search(self):
-    #     """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
 
-    #     singular = ['eu','tu','ele', 'você']
-    #     plural = ['nós', 'vós','eles', 'vocês']
+    def AN_MORF_SUBJECT_search(self):
+        """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
 
-    #     verbs_indx, verbs = self.VERB_search()
+        singular = ['eu','tu','ele','ela','você']
+        plural = ['nós', 'vós','eles','elas','vocês']
 
-    #     propesss_indx, propesss = self.PROPESS_search()
-    #     nprops_indx, nprops = self.NPROP_search()
-    #     nouns_indx, nouns = self.NOUN_search()
+        isSingular = False
+        isPlural = False
+        
+        verbs_indx, verbs = self.VERB_search()
 
-    #     subject_counter = 0
+        propesss_indx, propesss = self.PROPESS_search()
+        nprops_indx, nprops = self.NPROP_search()
+        nouns_indx, nouns = self.NOUN_search()
 
-    #     if verbs == None:
+        term_ar = {'present':['o','as','a','amos','ais','am'], 
+                    'past':['ei','aste','ou','amos','astes','aram'],
+                    'future':['arei','arás','ará','aremos','areis','arão']}
+        
+        term_er = {'present':['o','es','e','emos','eis','em'], 
+                    'past':['i','este','eu','eremos','estes','eram'],
+                    'future':['erei','erás','erá','eremos','ereis','erão']}
+                
+        term_ir = {'present':['o','es','e','imos','is','em'], 
+                    'past':['i','iste','iu','imos','istes','iram'],
+                    'future':['irei','irás','irá','iremos','ireis','irão']}
+        
+        
+        return (len(verbs_indx))
+
+        
         
