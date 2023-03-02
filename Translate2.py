@@ -1,4 +1,5 @@
 import pickle
+import simplemma
 import nltk 
 nltk.download('punkt')
 
@@ -11,6 +12,7 @@ with open('Tagger_Unigram_NLTK.pkl', 'rb') as handle2:
     unigram_tag = pickle.load(handle2)
 
 import nltk.tokenize as tknz
+
 
 class Translate:
     """
@@ -74,6 +76,42 @@ class Translate:
             tagger = unigram
         
         return tagger
+        
+    """-----------------------------correções menores do etiquetamento, pontuação-----------------------------"""
+
+    def TAGGER_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de pontuação"""
+        for i in range(0,len(self.tagged_sentence)):
+            if self.tagged_sentence[i][0] == '.':
+                self.tagged_sentence[i] = ('.','.')
+        for i in range(0,len(self.tagged_sentence)):
+            if self.tagged_sentence[i][0] == ',':
+                self.tagged_sentence[i] = (',',',')
+
+    """-----------------------------correções menores do etiquetamento, artigos-----------------------------"""
+
+    def ARTICLES_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de ARTIGOS"""
+
+        articles_list = ['a','o','as','os','um','uma','uns','umas']
+
+        for i in range(0,len(self.tagged_sentence)):
+            art = self.tagged_sentence[i][0]
+            if art in articles_list:
+                self.tagged_sentence[i] = (art,'ART')
+
+    """-----------------------------correções menores do etiquetamento, preposições-----------------------------"""
+
+    def PREPOSITIONS_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de PREPOSIÇÕES essenciais e contrações"""
+
+        prepositions_list = ['à','ao','às','aos','ante', 'após', 'até', 'com', 'contra', 'de', 'da', 'do', 'das', 'dos', 'desde', 
+        'em', 'na', 'no', 'nas', 'nos', 'entre', 'para', 'per', 'perante', 'por', 'sem', 'sob', 'sobre', 'trás', 'num', 'numa']
+
+        for i in range(0,len(self.tagged_sentence)):
+            prep = self.tagged_sentence[i][0]
+            if prep in prepositions_list:
+                self.tagged_sentence[i] = (prep,'PREP')
 
     """-----------------------------buscas de elementos morfológicos-----------------------------"""
 
@@ -132,8 +170,8 @@ class Translate:
     def temp_sentence(self):
         """Metodo para encontrar o tempo verbal na sentença etiquetada"""
 
-        adv_temp = [('antes','passado'), ('agora','presente'), 
-        ('depois','futuro'), ('ontem','passado'), ('já','passado'),('hoje','presente'), ('amanhã','futuro')]
+        adv_temp = [('antes','passado'), ('agora','presente'), ('depois','futuro'), 
+        ('já','passado'), ('ontem','passado'), ('já','passado'),('hoje','presente'), ('amanhã','futuro')]
 
         advt_sent=[]
 
@@ -160,8 +198,11 @@ class Translate:
         sentence = []
 
         verbs_indx, _ = self.VERB_search()
+        adv_indx,_ = self.ADV_search()
 
         if verbs_indx[0] == 0:
+            sentence.append(('eu','PROPESS'))
+        elif verbs_indx[0] == 1 and adv_indx[0] == 0:
             sentence.append(('eu','PROPESS'))
 
         for pos in self.tagged_sentence:
@@ -169,67 +210,50 @@ class Translate:
 
         self.tagged_sentence = sentence
 
-    """"-----------------------------sujeito da sentença-----------------------------"""
+    """"-----------------------------Redução de Verbo por lematização-----------------------------"""
 
-    def is_trasnsitive(self):       
+    def VERB_REDUCT_lemmatizer(self):
         """
-        Metodo encontrar a trasitividade verbal
+        Método para reduzir o verbo ao infinitivo com lematizador Simplemma.
         """
-        verbos_intransitivos = ['adormecer','andar','brincar','cair','casar','chegar','chorar','comparacer',
-        'deitar','dormir','errar','escorregar','explodir','ir','levantar','morar','morrer','nascer','proceder',
-        'sentar','sofrer','suceder','sumir','viver','voltar'] 
+        infinit_verbs = []
 
-        verbos_transitivos_diretos = ['abraçar','amar','atropelar','beber','bloquear','causar','começar','comer','comprar','cortar','criar','decifrar',
-        'derrubar','destruir','educar','fazer','gastar','honrar','impedir','justificar','lamentar','ler','machucar','negligenciar',
-        'observar','ouvir','perder','produzir','querer','quebrar','reparar','sanar','tampar','ter','untar','vaiar','xingar']
+        tagged = self.VERB_search()
+        for verb in tagged[1]:
+            infinit_verbs.append(simplemma.lemmatize(verb,lang='pt'))
 
-        verbos_transitivos_indiretos = ['acreditar','comparecer','concordar','conversar','duvidar','gostar','ingressar','lembrar',
-        'necessitar','obedecer','precisar','responder','saber','simpatizar','suceder']
+        return infinit_verbs
 
-        verbos_transitivos_diretos_indiretos = ['aconselhar','agradecer','comemorar','comunicar','contar','dar','devolver','emprestar',
-        'entregar','ensinar','influenciar','informar','oferecer','pagar','perdoar']
 
-        transi = []
-        verb_indx_transi =[]
-        verbs_transi=[]
-        for i in range(0,len(self.tagged_sentence)):
-            if self.tagged_sentence[i][1] == "V":
-                if self.tagged_sentence[i][0] in verbos_intransitivos:
-                    verb_indx_transi.append(i)
-                    verbs_transi.append(self.tagged_sentence[i][0])
-                    transi.append('VI')
-                elif self.tagged_sentence[i][0] in verbos_transitivos_diretos:
-                    verb_indx_transi.append(i)
-                    verbs_transi.append(self.tagged_sentence[i][0])
-                    transi.append('VTD')
-                elif self.tagged_sentence[i][0] in verbos_transitivos_indiretos:
-                    verb_indx_transi.append(i)
-                    verbs_transi.append(self.tagged_sentence[i][0])
-                    transi.append('VTI')
-                elif self.tagged_sentence[i][0] in verbos_transitivos_diretos_indiretos:
-                    verb_indx_transi.append(i)
-                    verbs_transi.append(self.tagged_sentence[i][0])
-                    transi.append('VTDI')
-                else:
-                    verb_indx_transi.append(i)
-                    verbs_transi.append(self.tagged_sentence[i][0])
-                    transi.append('NONE')
-        return (verb_indx_transi, verbs_transi,transi)
+    def AN_MORF_SUBJECT_search(self):
+        """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
+
+        singular = ['eu','tu','ele','ela','você']
+        plural = ['nós', 'vós','eles','elas','vocês']
+
+        isSingular = False
+        isPlural = False
+        
+        verbs_indx, verbs = self.VERB_search()
+
+        propesss_indx, propesss = self.PROPESS_search()
+        nprops_indx, nprops = self.NPROP_search()
+        nouns_indx, nouns = self.NOUN_search()
+
+        term_ar = {'present':['o','as','a','amos','ais','am'], 
+                    'past':['ei','aste','ou','amos','astes','aram'],
+                    'future':['arei','arás','ará','aremos','areis','arão']}
+        
+        term_er = {'present':['o','es','e','emos','eis','em'], 
+                    'past':['i','este','eu','eremos','estes','eram'],
+                    'future':['erei','erás','erá','eremos','ereis','erão']}
+                
+        term_ir = {'present':['o','es','e','imos','is','em'], 
+                    'past':['i','iste','iu','imos','istes','iram'],
+                    'future':['irei','irás','irá','iremos','ireis','irão']}
+        
+        
+        return (len(verbs_indx))
 
         
-    # def AN_MORF_SUBJECT_search(self):
-    #     """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
-
-    #     singular = ['eu','tu','ele', 'você']
-    #     plural = ['nós', 'vós','eles', 'vocês']
-
-    #     verbs_indx, verbs = self.VERB_search()
-
-    #     propesss_indx, propesss = self.PROPESS_search()
-    #     nprops_indx, nprops = self.NPROP_search()
-    #     nouns_indx, nouns = self.NOUN_search()
-
-    #     subject_counter = 0
-
-    #     if verbs == None:
         
