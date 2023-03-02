@@ -133,7 +133,7 @@ class Translate:
         """Metodo para encontrar o tempo verbal na sentença etiquetada"""
 
         adv_temp = [('antes','passado'), ('agora','presente'), 
-        ('depois','futuro'), ('ontem','passado'), ('hoje','presente'), ('amanhã','futuro')]
+        ('depois','futuro'), ('ontem','passado'), ('já','passado'),('hoje','presente'), ('amanhã','futuro')]
 
         advt_sent=[]
 
@@ -169,6 +169,52 @@ class Translate:
 
         self.tagged_sentence = sentence
 
+    """"-----------------------------sujeito da sentença-----------------------------"""
+
+    def is_trasnsitive(self):       
+        """
+        Metodo encontrar a trasitividade verbal
+        """
+        verbos_intransitivos = ['adormecer','andar','brincar','cair','casar','chegar','chorar','comparacer',
+        'deitar','dormir','errar','escorregar','explodir','ir','levantar','morar','morrer','nascer','proceder',
+        'sentar','sofrer','suceder','sumir','viver','voltar'] 
+
+        verbos_transitivos_diretos = ['abraçar','amar','atropelar','beber','bloquear','causar','começar','comer','comprar','cortar','criar','decifrar',
+        'derrubar','destruir','educar','fazer','gastar','honrar','impedir','justificar','lamentar','ler','machucar','negligenciar',
+        'observar','ouvir','perder','produzir','querer','quebrar','reparar','sanar','tampar','ter','untar','vaiar','xingar']
+
+        verbos_transitivos_indiretos = ['acreditar','comparecer','concordar','conversar','duvidar','gostar','ingressar','lembrar',
+        'necessitar','obedecer','precisar','responder','saber','simpatizar','suceder']
+
+        verbos_transitivos_diretos_indiretos = ['aconselhar','agradecer','comemorar','comunicar','contar','dar','devolver','emprestar',
+        'entregar','ensinar','influenciar','informar','oferecer','pagar','perdoar']
+
+        transi = []
+        verb_indx_transi =[]
+        verbs_transi=[]
+        for i in range(0,len(self.tagged_sentence)):
+            if self.tagged_sentence[i][1] == "V":
+                if self.tagged_sentence[i][0] in verbos_intransitivos:
+                    verb_indx_transi.append(i)
+                    verbs_transi.append(self.tagged_sentence[i][0])
+                    transi.append('VI')
+                elif self.tagged_sentence[i][0] in verbos_transitivos_diretos:
+                    verb_indx_transi.append(i)
+                    verbs_transi.append(self.tagged_sentence[i][0])
+                    transi.append('VTD')
+                elif self.tagged_sentence[i][0] in verbos_transitivos_indiretos:
+                    verb_indx_transi.append(i)
+                    verbs_transi.append(self.tagged_sentence[i][0])
+                    transi.append('VTI')
+                elif self.tagged_sentence[i][0] in verbos_transitivos_diretos_indiretos:
+                    verb_indx_transi.append(i)
+                    verbs_transi.append(self.tagged_sentence[i][0])
+                    transi.append('VTDI')
+                else:
+                    verb_indx_transi.append(i)
+                    verbs_transi.append(self.tagged_sentence[i][0])
+                    transi.append('NONE')
+        return (verb_indx_transi, verbs_transi,transi)
 
         
     # def AN_MORF_SUBJECT_search(self):
