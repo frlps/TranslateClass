@@ -274,8 +274,8 @@ class Translate:
     def SUBJECT_search(self):
         """Metodo para encontrar possíveis sujeitos (singular ou plural)"""
 
-        singular = ['eu','tu','ele/ela','você']
-        plural = ['nós', 'vós','eles/elas','vocês']
+        # singular = ['eu','tu','ele/ela','você']
+        # plural = ['nós', 'vós','eles/elas','vocês']
         verbal_agreement = None
         propess_equivalence = None
 
@@ -372,26 +372,55 @@ class Translate:
                 if 'você' in word_list or 'vocês' in word_list:
                     propess_equivalence = 'eles/elas'
                     verbal_agreement = 'plural'
+            else:
+                propess_equivalence = 'eles/elas'
+                verbal_agreement = 'plural'
 
         return(subject_count,tag_list,word_list,verbal_agreement,propess_equivalence)
 
 
+    def REGULAR_VERB_flexion(self):
+        """Metodo de flexão verbal """
 
+        # singular = ['eu','tu','ele/ela','você']
+        # plural = ['nós', 'vós','eles/elas','vocês']
 
-    def AN_MORF_SUBJECT_search(self):
-        """Metodo de conjugação verbal (singular ou plural)"""
-
-        singular = ['eu','tu','ele','ela','você']
-        plural = ['nós', 'vós','eles','elas','vocês']
-
-        isSingular = False
-        isPlural = False
+        '''Adicionar aqui o laço para pular os verbos irregulares, usando 
+            lista de verbos e método 'in' do laço 'if' 
+            deixar variável booleana para o teste de verbo irregular'''
         
-        verbs_indx, verbs = self.VERB_search()
+        first_sentence,_ = self.sent_split()
 
-        propesss_indx, propesss = self.PROPESS_search()
-        nprops_indx, nprops = self.NPROP_search()
-        nouns_indx, nouns = self.NOUN_search()
+        verbs_infinitive = self.VERB_REDUCT_lemmatizer()
+
+        princ_verb_infinitive = verbs_infinitive[0]
+
+        first_sentence_verbs = []
+
+        for tk in first_sentence:
+            if tk[1] == 'V':
+                first_sentence_verbs.append(tk[0])
+
+        princ_verb = first_sentence_verbs[0]
+
+        dif = len(princ_verb) - len(princ_verb_infinitive)
+
+        '''Se dif diferente de zero, rodar rotina de teste de tempo'''
+
+        sufix = ''
+        sufix_infinitive = ''
+
+        if dif != 0:
+            for i in range(dif):
+                l_letter = princ_verb[-dif+i]
+                sufix = sufix + l_letter
+            for j in range(2):
+                l_letter_inf = princ_verb_infinitive[-2+j]
+                sufix_infinitive = sufix_infinitive + l_letter_inf
+        
+
+        
+        _,_,_,verbal_agreement,propess_equivalence = self.SUBJECT_search()
 
         term_ar = {'present':['o','as','a','amos','ais','am'], 
                     'past':['ei','aste','ou','amos','astes','aram'],
@@ -406,7 +435,7 @@ class Translate:
                     'future':['irei','irás','irá','iremos','ireis','irão']}
         
         
-        return (len(verbs_indx))
+        return (first_sentence,princ_verb_infinitive,princ_verb,sufix,sufix_infinitive,verbal_agreement,propess_equivalence)
 
         
         
