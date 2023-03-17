@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<result>
+    <input>data</input>
+
+    <pos-tag>
+        <token_n>
+            <string>data</string>
+            <tag>data</tag>
+            <grammar_complement_n>data</grammar_complement_n> 
+        </token_n>
+    </pos-tag>
+
+    <grammar>
+        <frase_n> 
+            <subject type="simple/compound">data</subject>
+            <verb>data</verb>
+            <object>data</object>
+            <error_n>
+                <type>data</type>
+                <note>data</note>
+            </error_n>
+            <frase_output>data</frase_output>
+        </frase_n>
+        <total_output>data</total_output>
+    </grammar>
+
+    <treatment>
+        <frase_n>
+            <token>
+                <changed_token>Eu</changed_token>
+                <tag>PRON</tag>
+                <added>true</added>
+                <flexion>false</flexion>
+            </token>
+            <token>
+                <changed_token>sei</changed_token>
+                <tag>VERB</tag>
+                <added>false</added>
+                <flexion>true</flexion>
+            </token>
+            <token>
+                <changed_token>como</changed_token>
+                <tag>PREP</tag>
+                <added>false</added>
+                <flexion>false</flexion>
+            </token>
+            <token>
+                <changed_token>ligar</changed_token>
+                <tag>VERB</tag>
+                <added>false</added>
+                <flexion>true</flexion>
+            </token>
+            <token>
+                <changed_token>banco</changed_token>
+                <tag>OBJ</tag>
+                <added>false</added>
+                <flexion>false</flexion>
+            </token>
+            <token>
+                <changed_token>0800</changed_token>
+                <tag>NUM</tag>
+                <added>false</added>
+                <flexion>false</flexion>
+            </token>
+            <frase_output>Eu sei como ligar banco 0800</frase_output>
+        </frase_n>
+        <total_output>Eu sei como ligar banco 0800</total_output>
+    </treatment>
+    
+</result>

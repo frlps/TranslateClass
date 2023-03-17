@@ -2,6 +2,7 @@ import pickle
 import simplemma
 import nltk 
 nltk.download('punkt')
+import re
 
 #Importanto o POS Tagger Brill já treinado
 with open('Tagger_Brill.pkl', 'rb') as handle1:
@@ -113,6 +114,22 @@ class Translate:
             if prep in prepositions_list:
                 self.tagged_sentence[i] = (prep,'PREP')
 
+    """-----------------------------correções menores do etiquetamento, pronomes pessoais e de tratamento-----------------------------"""
+
+    def PRONOUNS_MINOR_corrections(self):
+        """Metodo para correção de tagueamento de pronomes pessoais e de tratamento"""
+
+        propess_list = ['eu','tu','ele','ela','nós', 'vós','eles','elas']
+        protrat_list = ['você','vocês']
+
+        for i in range(0,len(self.tagged_sentence)):
+            pro = self.tagged_sentence[i][0]
+            if pro in propess_list:
+                self.tagged_sentence[i] = (pro,'PROPESS')
+            elif pro in protrat_list:
+                self.tagged_sentence[i] = (pro,'PROTRAT')
+
+
     """-----------------------------buscas de elementos morfológicos-----------------------------"""
 
     def VERB_search(self):
@@ -164,6 +181,35 @@ class Translate:
                 propess_indx.append(i)
                 propesss.append(self.tagged_sentence[i][0])
         return (propess_indx, propesss)
+    
+    """-----------------------------Separador de sentença inicial-----------------------------"""
+
+    def sent_split(self):
+        """Metodo para separar sentença inicial etiquetada"""
+
+        tagged_sentence = self.tagged_sentence
+
+        first_sentence = []
+        types_for_check = []
+        index_output = 0
+
+        for i in range(len(tagged_sentence)):
+            if tagged_sentence[i][1] != "V" or tagged_sentence[i][1] == "V" and i == 0:
+                first_sentence.append(tagged_sentence[i])
+                types_for_check.append(tagged_sentence[i][1])
+                index_output += 1
+            else:
+                if 'V' in types_for_check:
+                    break
+                else:
+                    first_sentence.append(tagged_sentence[i])
+                    index_output += 1
+                    break
+
+        other_sentences = tagged_sentence[index_output:]
+
+        return(first_sentence, other_sentences)
+
 
     """-----------------------------tempo da sentença-----------------------------"""
 
@@ -190,10 +236,7 @@ class Translate:
     """"-----------------------------sujeito da sentença-----------------------------"""
 
     def PROPESS_INCLUD_sentence(self):
-        """
-        Metodo para incluir EU oculto na sentença etiquetada
-        !!! trocar para busca com n-gram
-        """
+        """Metodo para incluir EU oculto na sentença etiquetada"""
 
         sentence = []
 
@@ -225,8 +268,118 @@ class Translate:
         return infinit_verbs
 
 
+    """"-----------------------------Seção de flexão verbal-----------------------------"""
+    """"-----------------------------INCOMPLETO-----------------------------"""
+
+    def SUBJECT_search(self):
+        """Metodo para encontrar possíveis sujeitos (singular ou plural)"""
+
+        singular = ['eu','tu','ele/ela','você']
+        plural = ['nós', 'vós','eles/elas','vocês']
+        verbal_agreement = None
+        propess_equivalence = None
+
+        tag_list = []
+        word_list = []
+
+        propess_count = 0
+        protrat_count = 0
+        nprop_count = 0
+        noun_count = 0
+        subject_count = 0 
+
+        temp_first_sent,_ = self.sent_split()
+
+        for tk in temp_first_sent:
+            tag_list.append(tk[1])
+            if tk[1] == 'PROPESS':
+                propess_count += 1
+            if tk[1] == 'NPROP':
+                nprop_count += 1
+            if tk[1] == 'N':
+                noun_count += 1
+            if tk[1] == 'PROTRAT':
+                protrat_count +=1
+            word_list.append(tk[0])
+
+        subject_count = propess_count + nprop_count + noun_count + protrat_count
+
+        if subject_count == 0:
+            verbal_agreement = 'error'
+            propess_equivalence = 'error'
+        elif subject_count == 1:
+            if 'PROPESS' in tag_list:
+                if 'eu' in word_list:
+                    propess_equivalence = 'eu'
+                    verbal_agreement = 'singular'
+                elif 'tu' in word_list:
+                    propess_equivalence = 'tu'
+                    verbal_agreement = 'singular'
+                elif 'ele' in word_list or 'ela' in word_list:
+                    propess_equivalence = 'ele/ela'
+                    verbal_agreement = 'singular'
+                elif 'nós' in word_list:
+                    propess_equivalence = 'nós'
+                    verbal_agreement = 'plural'
+                elif 'vós' in word_list:
+                    propess_equivalence = 'vós'
+                    verbal_agreement = 'plural'
+                elif 'eles' in word_list or 'elas' in word_list:
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+            elif 'PROTRAT' in tag_list:
+                if 'você' in word_list:
+                    propess_equivalence = 'ele/ela'
+                    verbal_agreement = 'singular'
+                elif 'vocês' in word_list:
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+            elif 'NPROP' in tag_list:
+                propess_equivalence = 'ele/ela'
+                verbal_agreement = 'singular'
+            elif 'N' in tag_list:
+                word = ''
+                for tk in temp_first_sent:
+                    if tk[1] == 'N':
+                        word = tk[0]
+                if word[-1] == 's':
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+                else:
+                    propess_equivalence = 'ele/ela'
+                    verbal_agreement = 'singular'
+        else:
+            if 'PROPESS' in tag_list:
+                if 'eu' in word_list:
+                    propess_equivalence = 'nós'
+                    verbal_agreement = 'plural'
+                elif 'nós' in word_list:
+                    propess_equivalence = 'nós'
+                    verbal_agreement = 'plural'
+                elif 'tu' in word_list:
+                    propess_equivalence = 'vós'
+                    verbal_agreement = 'plural'
+                elif 'vós' in word_list:
+                    propess_equivalence = 'vós'
+                    verbal_agreement = 'plural'
+                elif 'ele' in word_list or 'ela' in word_list or 'você' in word_list:
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+                elif 'eles' in word_list or 'elas' in word_list or 'vocês' in word_list:
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+            elif 'PROTRAT' in tag_list:
+                if 'você' in word_list or 'vocês' in word_list:
+                    propess_equivalence = 'eles/elas'
+                    verbal_agreement = 'plural'
+
+        return(subject_count,tag_list,word_list,verbal_agreement,propess_equivalence)
+
+
+
+
     def AN_MORF_SUBJECT_search(self):
-        """Metodo para encontrar o sujeito na sentença etiquetada (singular ou plural)"""
+        """Metodo de conjugação verbal (singular ou plural)"""
 
         singular = ['eu','tu','ele','ela','você']
         plural = ['nós', 'vós','eles','elas','vocês']
