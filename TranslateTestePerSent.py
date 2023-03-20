@@ -1,6 +1,6 @@
 from Translate2 import Translate
 
-trans = Translate('Eu comerei maçã ontem, gostar muito de maçã')
+trans = Translate('O cachorro e penguim passarei pela maçã, gostar muito de maçã')
 
 #print(trans.tagged_sentence)
 
@@ -19,3 +19,5 @@ trans.PRONOUNS_MINOR_corrections()
 #print(trans.tagged_sentence)
 #print(trans.SUBJECT_search())
 print(trans.REGULAR_VERB_flexion())
+
+#print(trans.temp_sentence())

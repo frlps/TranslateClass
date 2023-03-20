@@ -17,7 +17,7 @@ import nltk.tokenize as tknz
 
 class Translate:
     """
-        Classe translate version 1.1 03/08/2022
+        Classe translate version 1.2 20/03/2023
     """
 
     def __init__(self, sentence_to_translate=None, unigram_tagger=unigram_tag, brill_tagger=brill_tag):
@@ -227,10 +227,18 @@ class Translate:
             if advt[0] in advs:
                 advt_sent.append(advt)
 
+        '''Rotina de interação com o usuário suprimida conforme definido em 
+            reuniões de equipe'''
+        # if len(advt_sent) == 0:
+        #     temp = input('Quando: Presente, passado ou futuro ?? \n')
+        #     temp = temp.lower()
+        #     return temp
+
+        '''Sem a rotina de interação, e na ausência de advérbios de tempo
+            o "default" é (agora,presente)'''
         if len(advt_sent) == 0:
-            temp = input('Quando: Presente, passado ou futuro ?? \n')
-            temp = temp.lower()
-            return temp
+            advt_sent.append(('padrão','padrão'))
+
         return advt_sent[0][1]  
 
     """"-----------------------------sujeito da sentença-----------------------------"""
@@ -388,13 +396,11 @@ class Translate:
         '''Adicionar aqui o laço para pular os verbos irregulares, usando 
             lista de verbos e método 'in' do laço 'if' 
             deixar variável booleana para o teste de verbo irregular'''
+        is_regular = True
         
         first_sentence,_ = self.sent_split()
-
         verbs_infinitive = self.VERB_REDUCT_lemmatizer()
-
         princ_verb_infinitive = verbs_infinitive[0]
-
         first_sentence_verbs = []
 
         for tk in first_sentence:
@@ -403,39 +409,78 @@ class Translate:
 
         princ_verb = first_sentence_verbs[0]
 
+        '''Compara os tamanhos dos verbos contra seus infinitivos'''
+
         dif = len(princ_verb) - len(princ_verb_infinitive)
+        is_infinitive = princ_verb == princ_verb_infinitive
 
-        '''Se dif diferente de zero, rodar rotina de teste de tempo'''
-
-        sufix = ''
         sufix_infinitive = ''
+        for j in range(2):
+            l_letter_inf = princ_verb_infinitive[-2+j]
+            sufix_infinitive = sufix_infinitive + l_letter_inf
 
-        if dif != 0:
-            for i in range(dif):
-                l_letter = princ_verb[-dif+i]
-                sufix = sufix + l_letter
-            for j in range(2):
-                l_letter_inf = princ_verb_infinitive[-2+j]
-                sufix_infinitive = sufix_infinitive + l_letter_inf
-        
+        '''Se is_infinitive FALSE, rodar rotina de teste de tempo'''
 
+        prefix = princ_verb_infinitive[:-2]
+        sufix = ''
+
+        if not(is_infinitive):
+            if len(princ_verb) >= len(princ_verb_infinitive):
+                for i in range(len(prefix)):
+                    if princ_verb_infinitive[i] == prefix[i]:
+                        sufix = princ_verb[i+1:]
+            else:
+                sufix = 'ERROR'        
         
         _,_,_,verbal_agreement,propess_equivalence = self.SUBJECT_search()
 
-        term_ar = {'present':['o','as','a','amos','ais','am'], 
-                    'past':['ei','aste','ou','amos','astes','aram'],
-                    'future':['arei','arás','ará','aremos','areis','arão']}
+        term_ar = {'presente':['o','as','a','amos','ais','am'], 
+                    'passado':['ei','aste','ou','amos','astes','aram'],
+                    'futuro':['arei','arás','ará','aremos','areis','arão']}
         
-        term_er = {'present':['o','es','e','emos','eis','em'], 
-                    'past':['i','este','eu','eremos','estes','eram'],
-                    'future':['erei','erás','erá','eremos','ereis','erão']}
+        term_er = {'presente':['o','es','e','emos','eis','em'], 
+                    'passado':['i','este','eu','eremos','estes','eram'],
+                    'futuro':['erei','erás','erá','eremos','ereis','erão']}
                 
-        term_ir = {'present':['o','es','e','imos','is','em'], 
-                    'past':['i','iste','iu','imos','istes','iram'],
-                    'future':['irei','irás','irá','iremos','ireis','irão']}
+        term_ir = {'presente':['o','es','e','imos','is','em'], 
+                    'passado':['i','iste','iu','imos','istes','iram'],
+                    'futuro':['irei','irás','irá','iremos','ireis','irão']}
+        
+        temp_sentence = self.temp_sentence()
+
+        if temp_sentence == 'padrão': 
+            if is_regular:
+                if not(is_infinitive):
+                        if sufix_infinitive == 'ar':
+                            if sufix in term_ar['presente']:
+                                temp_sentence = 'presente'
+                            elif sufix in term_ar['passado']:
+                                temp_sentence = 'passado'
+                            else:
+                                temp_sentence = 'futuro'
+                        elif sufix_infinitive == 'er':
+                            if sufix in term_ar['presente']:
+                                temp_sentence = 'presente'
+                            elif sufix in term_ar['passado']:
+                                temp_sentence = 'passado'
+                            else:
+                                temp_sentence = 'futuro'
+                        elif sufix_infinitive == 'ir':
+                            if sufix in term_ar['presente']:
+                                temp_sentence = 'presente'
+                            elif sufix in term_ar['passado']:
+                                temp_sentence = 'passado'
+                            else:
+                                temp_sentence = 'futuro'
+                else:
+                    '''Se infinitivo e não tem advérbio = presente'''
+                    temp_sentence = 'presente'
+            else:
+                '''Rotina de teste para irregulares, na fase 2, mantém "default"!'''
+                temp_sentence = 'presente'
         
         
-        return (first_sentence,princ_verb_infinitive,princ_verb,sufix,sufix_infinitive,verbal_agreement,propess_equivalence)
+        return (first_sentence,princ_verb_infinitive,princ_verb,prefix,sufix,sufix_infinitive,verbal_agreement,propess_equivalence,is_infinitive,temp_sentence)
 
         
         
