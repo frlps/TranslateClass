@@ -370,10 +370,10 @@ class Translate:
                 elif 'vós' in word_list:
                     propess_equivalence = 'vós'
                     verbal_agreement = 'plural'
-                elif 'ele' in word_list or 'ela' in word_list or 'você' in word_list:
+                elif 'ele' in word_list or 'ela' in word_list:
                     propess_equivalence = 'eles/elas'
                     verbal_agreement = 'plural'
-                elif 'eles' in word_list or 'elas' in word_list or 'vocês' in word_list:
+                elif 'eles' in word_list or 'elas' in word_list:
                     propess_equivalence = 'eles/elas'
                     verbal_agreement = 'plural'
             elif 'PROTRAT' in tag_list:
@@ -448,39 +448,95 @@ class Translate:
         
         temp_sentence = self.temp_sentence()
 
+        is_verb_conjugated = False
+
         if temp_sentence == 'padrão': 
             if is_regular:
                 if not(is_infinitive):
                         if sufix_infinitive == 'ar':
                             if sufix in term_ar['presente']:
                                 temp_sentence = 'presente'
+                                is_verb_conjugated = True
                             elif sufix in term_ar['passado']:
                                 temp_sentence = 'passado'
-                            else:
+                                is_verb_conjugated = True
+                            elif sufix in term_ar['futuro']:
                                 temp_sentence = 'futuro'
+                                is_verb_conjugated = True
+                            else:
+                                temp_sentence = 'padrão'
+                                print('sufixo infinitivo -ar -> tempo não encontrado')
                         elif sufix_infinitive == 'er':
-                            if sufix in term_ar['presente']:
+                            if sufix in term_er['presente']:
                                 temp_sentence = 'presente'
-                            elif sufix in term_ar['passado']:
+                                is_verb_conjugated = True
+                            elif sufix in term_er['passado']:
                                 temp_sentence = 'passado'
-                            else:
+                                is_verb_conjugated = True
+                            elif sufix in term_er['futuro']:
                                 temp_sentence = 'futuro'
+                                is_verb_conjugated = True
+                            else:
+                                temp_sentence = 'padrão'
+                                print('sufixo infinitivo -er -> tempo não encontrado')
                         elif sufix_infinitive == 'ir':
-                            if sufix in term_ar['presente']:
+                            if sufix in term_ir['presente']:
                                 temp_sentence = 'presente'
-                            elif sufix in term_ar['passado']:
+                                is_verb_conjugated = True
+                            elif sufix in term_ir['passado']:
                                 temp_sentence = 'passado'
-                            else:
+                                is_verb_conjugated = True
+                            elif sufix in term_ir['futuro']:
                                 temp_sentence = 'futuro'
+                                is_verb_conjugated = True
+                            else:
+                                temp_sentence = 'padrão'
+                                print('sufixo infinitivo -ir -> tempo não encontrado')
                 else:
                     '''Se infinitivo e não tem advérbio = presente'''
                     temp_sentence = 'presente'
             else:
                 '''Rotina de teste para irregulares, na fase 2, mantém "default"!'''
                 temp_sentence = 'presente'
-        
-        
-        return (first_sentence,princ_verb_infinitive,princ_verb,prefix,sufix,sufix_infinitive,verbal_agreement,propess_equivalence,is_infinitive,temp_sentence)
+
+        propess_vector_index = None
+
+        if propess_equivalence == 'eu':
+            propess_vector_index = 0
+        elif propess_equivalence == 'tu':
+            propess_vector_index = 1
+        elif propess_equivalence == 'ele/ela':
+            propess_vector_index = 2
+        elif propess_equivalence == 'nós':
+            propess_vector_index = 3
+        elif propess_equivalence == 'vós':
+            propess_vector_index = 4
+        elif propess_equivalence == 'eles/elas':
+            propess_vector_index = 5
+
+        verb_conjugated = princ_verb
+
+        if is_regular:
+            if sufix_infinitive == 'ar':
+                conj_sufix = term_ar[temp_sentence][propess_vector_index]
+            elif sufix_infinitive == 'er':
+                conj_sufix = term_er[temp_sentence][propess_vector_index]
+            elif sufix_infinitive == 'ir':
+                conj_sufix = term_ir[temp_sentence][propess_vector_index]
+            else:
+                conj_sufix = 'SUFIX_ERROR'
+            verb_conjugated = prefix + conj_sufix 
+
+        temp_equal_conjugation = verb_conjugated == princ_verb
+
+        verb_index,_ = self.VERB_search()
+
+        if not(temp_equal_conjugation):
+            self.tagged_sentence[verb_index[0]] = (verb_conjugated,'V')
+
+        return (first_sentence,princ_verb_infinitive,princ_verb,prefix,sufix,
+                sufix_infinitive,verbal_agreement,propess_equivalence,is_infinitive,temp_sentence,
+                propess_vector_index,verb_conjugated,temp_equal_conjugation)
 
         
         
