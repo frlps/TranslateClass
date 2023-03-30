@@ -29,3 +29,17 @@ xml_handler.add_treatment_frases(list_test, sentenca_final)
 
 xml_handler.export_results_to_final_XML_document("saida.xml")
 
+tagg_sent = [('benjamim', 'NPROP'), ('e', 'KC'), ('aline', 'NPROP'), ('comer', 'V'), ('maça', 'N'), 
+             ('ontem', 'ADV'), ('gostar', 'V'), ('muito', 'ADV'), ('de', 'PREP'), ('maça', 'N')]
+
+new_tagg_sent = [('benjamim', 'NPROP'), ('e', 'KC'), ('aline', 'NPROP'), ('comeram', 'V'), ('maça', 'N'), 
+                 ('ontem', 'ADV'), ('gostar', 'V'), ('muito', 'ADV'), ('de', 'PREP'), ('maça', 'N')]
+
+
+for i in range(len(tagg_sent)):
+    print(tagg_sent[i])
+    print(new_tagg_sent[i])
+    if new_tagg_sent[i] == tagg_sent[i]:
+        print('Igual')
+    else:
+        print('Diferente')

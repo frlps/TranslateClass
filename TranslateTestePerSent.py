@@ -1,6 +1,6 @@
 from Translate2 import Translate
 
-trans = Translate('Eu surdo tem problema finança', xml_use=False)
+trans = Translate('Benjamim e Aline comer maça ontem gostar muito de maça', xml_use=False)
 
 #'eu você comer pastel e tomar suco ontem'
 #print(trans.tagged_sentence)
@@ -13,14 +13,15 @@ trans = Translate('Eu surdo tem problema finança', xml_use=False)
 #print(trans.sent_split())
 
 #print(trans.tagged_sentence)
-#print(trans.SUBJECT_APROX_search())
 
 trans.PRONOUNS_MINOR_corrections()
 
-print(trans.tagged_sentence)
-#print(trans.VERB_search())
-#print(trans.SUBJECT_search())
+trans.PROPESS_INCLUD_sentence()
 print(trans.REGULAR_VERB_flexion())
 print(trans.tagged_sentence)
+
+# trans.PROPESS_INCLUD_sentence()
+# print(trans.tagged_sentence)
+# print(trans.REGULAR_VERB_flexion())
 
 #print(trans.temp_sentence())

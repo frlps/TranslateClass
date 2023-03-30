@@ -53,15 +53,6 @@ class Translate:
         '''Depois alterar para os tags do xml'''
         self.tagged_sentence = self.tagger_choose()
 
-
-    def import_results_xml(self):
-            self.xml_handler.import_xml_doc_to_root()
-            self.sentenca = self.xml_handler.get_input()
-            self.sentenca_etiquetada = self.xml_handler.get_pos_tag_tokens()
-
-            return self.sentenca_etiquetada
-
-
     def test_taggers(self):
         """Metodo de teste dos etiquetadores"""
         tagged_unigram= self.unigram_tagger.tag(tknz.word_tokenize(self.stt))
@@ -415,6 +406,7 @@ class Translate:
     def REGULAR_VERB_flexion(self):
         """Metodo de flexão verbal """
 
+        input_sentece = self.tagged_sentence.copy()
         first_sentence,_ = self.sent_split()
         verbs_infinitive = self.VERB_REDUCT_lemmatizer()
         princ_verb_infinitive = verbs_infinitive[0]
@@ -435,7 +427,6 @@ class Translate:
 
         '''Compara os tamanhos dos verbos contra seus infinitivos'''
 
-        dif = len(princ_verb) - len(princ_verb_infinitive)
         is_infinitive = princ_verb == princ_verb_infinitive
 
         sufix_infinitive = ''
@@ -558,8 +549,22 @@ class Translate:
         if not(temp_equal_conjugation):
             self.tagged_sentence[verb_index[0]] = (verb_conjugated,'V')
 
+        closure_list = list()
+
+        for i in range(len(input_sentece)):
+            if self.tagged_sentence[i] == input_sentece[i]:
+                closure_list.append([self.tagged_sentence[i][0],self.tagged_sentence[i][1],False,False])
+            else:
+                closure_list.append([self.tagged_sentence[i][0],self.tagged_sentence[i][1],False,True])
+
+        closure_sentence = self.xml_handler.get_grammar_frases()[0][3]
+
+        self.xml_handler.add_treatment_frases(closure_list, closure_sentence)
+        self.xml_handler.export_results_to_final_XML_document("to_closure.xml")
+
+
         return (first_sentence,princ_verb_infinitive,princ_verb,prefix,sufix,
                 sufix_infinitive,verbal_agreement,propess_equivalence,is_infinitive,temp_sentence,
-                propess_vector_index,verb_conjugated,temp_equal_conjugation)
+                propess_vector_index,verb_conjugated,temp_equal_conjugation,closure_list)
 
         

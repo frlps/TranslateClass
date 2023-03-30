@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8'?>
+<?xml version='1.0' encoding='utf-8'?>
 <result>
 	<pos-tag>
 		<token_n>
@@ -79,7 +79,7 @@
 		</frase_n>
 		<total_output>eu você comer pastel ontem</total_output>
 	</grammar>
-	<treatment><frase_n><token><changed_token>eu</changed_token><tag>PROPESS</tag><added>true</added><flexion>false</flexion></token><token><changed_token>você</changed_token><tag>PROTRAT</tag><added>false</added><flexion>false</flexion></token><token><changed_token>comemos</changed_token><tag>V</tag><added>false</added><flexion>true</flexion></token><token><changed_token>pastel</changed_token><tag>N</tag><added>false</added><flexion>false</flexion></token><token><changed_token>e</changed_token><tag>KC</tag><added>false</added><flexion>false</flexion></token><token><changed_token>tomar</changed_token><tag>V</tag><added>false</added><flexion>false</flexion></token><token><changed_token>suco</changed_token><tag>N</tag><added>false</added><flexion>false</flexion></token><token><changed_token>ontem</changed_token><tag>ADV</tag><added>false</added><flexion>false</flexion></token><frase_output>eu você comer pastel e tomar suco ontem</frase_output></frase_n></treatment>
+	<treatment><frase_n><token_n><changed_token>benjamim</changed_token><tag>NPROP</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>e</changed_token><tag>KC</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>aline</changed_token><tag>NPROP</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>comeram</changed_token><tag>V</tag><added>false</added><flexion>true</flexion></token_n><token_n><changed_token>maça</changed_token><tag>N</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>ontem</changed_token><tag>ADV</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>gostar</changed_token><tag>V</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>muito</changed_token><tag>ADV</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>de</changed_token><tag>PREP</tag><added>false</added><flexion>false</flexion></token_n><token_n><changed_token>maça</changed_token><tag>N</tag><added>false</added><flexion>false</flexion></token_n><frase_output>eu você comer pastel e tomar suco ontem</frase_output></frase_n></treatment>
 	<closure />
 	<input>eu você comer pastel e tomar suco ontem</input>
 </result>
