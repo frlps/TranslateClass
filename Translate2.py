@@ -3,6 +3,8 @@ import simplemma
 import nltk 
 nltk.download('punkt')
 import re
+from xml_handler import XMLHandlerModule
+import pandas as pd
 
 #Importanto o POS Tagger Brill já treinado
 with open('Tagger_Brill.pkl', 'rb') as handle1:
@@ -17,23 +19,48 @@ import nltk.tokenize as tknz
 
 class Translate:
     """
-        Classe translate version 1.2 20/03/2023
+        Classe translate version 1.3 27/03/2023
     """
 
-    def __init__(self, sentence_to_translate=None, unigram_tagger=unigram_tag, brill_tagger=brill_tag):
+    def __init__(self, sentence_to_translate=None, unigram_tagger=unigram_tag, brill_tagger=brill_tag, xml_use=True):
+        
         """Construtor"""
+        
+        self.xml_handler = XMLHandlerModule()  
+        self.xml_handler.import_xml_doc_to_root()
+
         self.unigram_tagger = unigram_tagger
         self.brill_tagger = brill_tagger
 
-        if sentence_to_translate == None:
-            inp = input('Qual a sentença que você quer traduzir?? : ')
-            self.stt = inp.lower()
+        '''Leitura e construção do data frame com verbos irregulares (uso etapa2) e lista de irregulares'''
+        self.irregulars_pd = pd.read_excel('Lista_Irregulares.xlsx')
+        self.irregular_list = list(self.irregulars_pd.Verbos)
+
+        '''Teste do uso do xml ou frase de entrada'''
+        if not(xml_use):
+            if sentence_to_translate == None:
+                inp = input('Qual a sentença que você quer traduzir?? : ')
+                self.stt = inp.lower()
+            else:
+                self.stt = sentence_to_translate.lower()
         else:
-            self.stt = sentence_to_translate.lower()
+            self.stt = self.xml_handler.get_grammar_frases()[0][3]
+
+        self.stt = self.stt.lower()
 
         self.tokens = tknz.word_tokenize(self.stt)
 
+        '''Depois alterar para os tags do xml'''
         self.tagged_sentence = self.tagger_choose()
+
+
+    def import_results_xml(self):
+            self.xml_handler.import_xml_doc_to_root()
+            self.sentenca = self.xml_handler.get_input()
+            self.sentenca_etiquetada = self.xml_handler.get_pos_tag_tokens()
+
+            return self.sentenca_etiquetada
+
 
     def test_taggers(self):
         """Metodo de teste dos etiquetadores"""
@@ -282,8 +309,6 @@ class Translate:
     def SUBJECT_search(self):
         """Metodo para encontrar possíveis sujeitos (singular ou plural)"""
 
-        # singular = ['eu','tu','ele/ela','você']
-        # plural = ['nós', 'vós','eles/elas','vocês']
         verbal_agreement = None
         propess_equivalence = None
 
@@ -390,14 +415,6 @@ class Translate:
     def REGULAR_VERB_flexion(self):
         """Metodo de flexão verbal """
 
-        # singular = ['eu','tu','ele/ela','você']
-        # plural = ['nós', 'vós','eles/elas','vocês']
-
-        '''Adicionar aqui o laço para pular os verbos irregulares, usando 
-            lista de verbos e método 'in' do laço 'if' 
-            deixar variável booleana para o teste de verbo irregular'''
-        is_regular = True
-        
         first_sentence,_ = self.sent_split()
         verbs_infinitive = self.VERB_REDUCT_lemmatizer()
         princ_verb_infinitive = verbs_infinitive[0]
@@ -408,6 +425,13 @@ class Translate:
                 first_sentence_verbs.append(tk[0])
 
         princ_verb = first_sentence_verbs[0]
+
+        '''Teste do verbo irregular'''
+        is_regular = bool()
+        if princ_verb_infinitive in self.irregular_list:
+            is_regular = False
+        else:
+            is_regular = True
 
         '''Compara os tamanhos dos verbos contra seus infinitivos'''
 
@@ -439,7 +463,7 @@ class Translate:
                     'futuro':['arei','arás','ará','aremos','areis','arão']}
         
         term_er = {'presente':['o','es','e','emos','eis','em'], 
-                    'passado':['i','este','eu','eremos','estes','eram'],
+                    'passado':['i','este','eu','emos','estes','eram'],
                     'futuro':['erei','erás','erá','eremos','ereis','erão']}
                 
         term_ir = {'presente':['o','es','e','imos','is','em'], 
@@ -538,5 +562,4 @@ class Translate:
                 sufix_infinitive,verbal_agreement,propess_equivalence,is_infinitive,temp_sentence,
                 propess_vector_index,verb_conjugated,temp_equal_conjugation)
 
-        
         

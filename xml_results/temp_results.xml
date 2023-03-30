@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<result>
+	<pos-tag>
+		<token_n>
+			<string>EU</string>
+			<tag>PROPESS</tag>
+			<grammar_complement_n>nsubj_nominal subject</grammar_complement_n>
+			<grammar_complement_n>comer</grammar_complement_n>
+			<grammar_complement_n>PRO</grammar_complement_n>
+			<grammar_complement_n>PRONOME_PESSOAL_RETO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>VOCÊ</string>
+			<tag>PROPESS</tag>
+			<grammar_complement_n>nsubj_nominal subject</grammar_complement_n>
+			<grammar_complement_n>comer</grammar_complement_n>
+			<grammar_complement_n>PRO</grammar_complement_n>
+			<grammar_complement_n>PRONOME_TRATAMENTO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>COMER</string>
+			<tag>V</tag>
+			<grammar_complement_n>ROOT_root</grammar_complement_n>
+			<grammar_complement_n>comer</grammar_complement_n>
+			<grammar_complement_n>V</grammar_complement_n>
+			<grammar_complement_n>VERBO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>PASTEL</string>
+			<tag>N</tag>
+			<grammar_complement_n>obj_object</grammar_complement_n>
+			<grammar_complement_n>comer</grammar_complement_n>
+			<grammar_complement_n>N</grammar_complement_n>
+			<grammar_complement_n>SUBSTANTIVO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>E</string>
+			<tag>KC</tag>
+			<grammar_complement_n>cc_coordinating conjunction</grammar_complement_n>
+			<grammar_complement_n>tomar</grammar_complement_n>
+			<grammar_complement_n>KC</grammar_complement_n>
+			<grammar_complement_n>CONJUNCAO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>TOMAR</string>
+			<tag>V</tag>
+			<grammar_complement_n>conj_conjunct</grammar_complement_n>
+			<grammar_complement_n>comer</grammar_complement_n>
+			<grammar_complement_n>V</grammar_complement_n>
+			<grammar_complement_n>VERBO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>SUCO</string>
+			<tag>N</tag>
+			<grammar_complement_n>obj_object</grammar_complement_n>
+			<grammar_complement_n>tomar</grammar_complement_n>
+			<grammar_complement_n>N</grammar_complement_n>
+			<grammar_complement_n>SUBSTANTIVO</grammar_complement_n>
+		</token_n>
+		<token_n>
+			<string>ONTEM</string>
+			<tag>ADV</tag>
+			<grammar_complement_n>advmod_adverbial modifier</grammar_complement_n>
+			<grammar_complement_n>tomar</grammar_complement_n>
+			<grammar_complement_n>ADV</grammar_complement_n>
+			<grammar_complement_n>ADVERBIO</grammar_complement_n>
+		</token_n>
+	</pos-tag>
+	<grammar>
+		<frase_n>
+			<subject type="compound">eu você</subject>
+			<verb>comer</verb>
+			<object>pastel e tomar suco ontem</object>
+			<frase_output>eu você comer pastel e tomar suco ontem</frase_output>
+			<error_n>
+				<type/>
+				<note/>
+			</error_n>
+		</frase_n>
+		<total_output>eu você comer pastel ontem</total_output>
+	</grammar>
+	<treatment/>
+	<closure/>
+	<input>eu você comer pastel e tomar suco ontem</input>
+</result>

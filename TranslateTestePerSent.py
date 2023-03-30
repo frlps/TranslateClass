@@ -1,7 +1,8 @@
 from Translate2 import Translate
 
-trans = Translate('Eu passei pela maçã, gostar muito de maçã')
+trans = Translate('Eu surdo tem problema finança', xml_use=False)
 
+#'eu você comer pastel e tomar suco ontem'
 #print(trans.tagged_sentence)
 
 #print(trans.PROPESS_search())
